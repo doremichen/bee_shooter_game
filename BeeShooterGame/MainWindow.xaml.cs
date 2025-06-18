@@ -201,6 +201,23 @@ namespace BeeShooterGame
         {
             _gameOver = true; // Set game over flag
 
+            UpdateGameRecord();
+
+            // Save game record to a file
+            SaveGameRecord(); // Save high score and longest time survived to file
+
+            // Game over is visible to the user
+            GameOverText.Visibility = Visibility.Visible;
+            RestartButton.Visibility = Visibility.Visible; // Show restart button
+            _gameLoopTimer.Stop(); // Stop the game loop timer
+            MessageBox.Show("Game Over!"); // Show game over message
+        }
+
+        /**
+         * Update game record based on current score and elapsed time
+         */
+        private void UpdateGameRecord()
+        {
             // Check if the current time survived is longer than the longest time survived
             if (_elapsedTime > _longestTimeSurvived)
             {
@@ -220,15 +237,6 @@ namespace BeeShooterGame
                 // Display high score to the user
                 HighScoreText.Text = $"High Score: {_highScore}";
             }
-
-            // Save game record to a file
-            SaveGameRecord(); // Save high score and longest time survived to file
-
-            // Game over is visible to the user
-            GameOverText.Visibility = Visibility.Visible;
-            RestartButton.Visibility = Visibility.Visible; // Show restart button
-            _gameLoopTimer.Stop(); // Stop the game loop timer
-            MessageBox.Show("Game Over!"); // Show game over message
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -360,6 +368,29 @@ namespace BeeShooterGame
                             "Press the spacebar to shoot bullets.\n" +
                             "Avoid enemies and try to survive as long as possible.\n" +
                             "Good luck!", "Game Instructions", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        /**
+         * Exit button click event handler
+         */
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Show confirmation dialog before exiting
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to exit the game?", "Exit Game", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                // update game record before exiting
+                UpdateGameRecord(); // Update high score and longest time survived
+                SaveGameRecord(); // Save high score and longest time survived to file
+
+                // stop the game loop timer if it's running
+                if (_gameLoopTimer != null && _gameLoopTimer.IsEnabled)
+                {
+                    _gameLoopTimer.Stop(); // Stop the game loop timer
+                }
+
+                Application.Current.Shutdown(); // Close the application
+            }
         }
     }
 }
