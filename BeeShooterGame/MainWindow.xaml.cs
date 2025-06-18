@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using BeeShooterGame.data;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -37,13 +38,23 @@ namespace BeeShooterGame
         private bool _gameOver = false;
         // elapsed time variable
         private TimeSpan _elapsedTime = TimeSpan.Zero;
+        // high score variable
+        private int _highScore = 0; // track high score
+        // longest time survived variable
+        private TimeSpan _longestTimeSurvived = TimeSpan.Zero; // track longest time survived
+
+        // save file path for high score and longest time survived
+        private const string SaveFilePath = "game_record.json"; // Path to save game record
 
 
 
         public MainWindow()
         {
             InitializeComponent();
-            
+            // Load game record from file
+            LoadGameRecord(); // Load high score and longest time survived from file
+            // Initialize the game
+            InitGame();  // Debugging: Initialize the game when the window is loaded
         }
 
         private void InitGame()
@@ -189,6 +200,30 @@ namespace BeeShooterGame
         private void GamOver()
         {
             _gameOver = true; // Set game over flag
+
+            // Check if the current time survived is longer than the longest time survived
+            if (_elapsedTime > _longestTimeSurvived)
+            {
+                _longestTimeSurvived = _elapsedTime; // Update longest time survived
+                // Optionally, you can save the longest time to a file or database
+
+                // Display longest time survived to the user
+                LongestTimeText.Text = $"Longest Time: {_longestTimeSurvived.Minutes:00}:{_longestTimeSurvived.Seconds:00}";
+            }
+
+            // Check if the current score is higher than the high score
+            if (_score > _highScore)
+            {
+                _highScore = _score; // Update high score
+                // Optionally, you can save the high score to a file or database
+
+                // Display high score to the user
+                HighScoreText.Text = $"High Score: {_highScore}";
+            }
+
+            // Save game record to a file
+            SaveGameRecord(); // Save high score and longest time survived to file
+
             // Game over is visible to the user
             GameOverText.Visibility = Visibility.Visible;
             RestartButton.Visibility = Visibility.Visible; // Show restart button
@@ -247,10 +282,8 @@ namespace BeeShooterGame
             _playerLives = 3; // Reset player lives
             _score = 0; // Reset score
             _elapsedTime = TimeSpan.Zero; // Reset elapsed time
-            // Update UI elements
-            LivesText.Text = $"Lives: {_playerLives}"; // Update lives display
-            ScoreText.Text = $"Score: {_score}"; // Update score display
-            TimeText.Text = $"Time: 00:00"; // Reset elapsed time display
+                                          // Update UI elements
+            InitUI();
             // Clear existing bullets and enemies
             _bullets.Clear();
             _enemies.Clear();
@@ -261,6 +294,47 @@ namespace BeeShooterGame
             GameOverText.Visibility = Visibility.Hidden;
             RestartButton.Visibility = Visibility.Hidden;
 
+        }
+
+        private void InitUI()
+        {
+            LivesText.Text = $"Lives: {_playerLives}"; // Update lives display
+            ScoreText.Text = $"Score: {_score}"; // Update score display
+            TimeText.Text = $"Time: 00:00"; // Reset elapsed time display
+            LongestTimeText.Text = $"Longest Time: {_longestTimeSurvived}"; // Reset longest time survived display
+            HighScoreText.Text = $"High Score: {_highScore}"; // Reset high score display
+        }
+
+        /**
+         * Save game record to a json file
+         */
+        private void SaveGameRecord()
+        {             
+            var gameRecord = new
+            {
+                HighScore = _highScore,
+                LongestGameDuration = _longestTimeSurvived // Format as mm:ss
+            };
+            // Serialize to JSON and save to file
+            string json = System.Text.Json.JsonSerializer.Serialize(gameRecord);
+            System.IO.File.WriteAllText(SaveFilePath, json);
+        }
+
+        /**
+         * Load game record from a json file
+         */
+        private void LoadGameRecord()
+        {
+            if (System.IO.File.Exists(SaveFilePath))
+            {
+                string json = System.IO.File.ReadAllText(SaveFilePath);
+                var gameRecord = System.Text.Json.JsonSerializer.Deserialize<GameRecord>(json);
+                _highScore = gameRecord.HighScore;
+                _longestTimeSurvived = gameRecord.LongestGameDuration; // Directly assign TimeSpan property
+                // Update UI with loaded values
+                HighScoreText.Text = $"High Score: {_highScore}";
+                LongestTimeText.Text = $"Longest Time: {_longestTimeSurvived.Minutes:00}:{_longestTimeSurvived.Seconds:00}";
+            }
         }
 
         private void StartGame_Click(object sender, RoutedEventArgs e)

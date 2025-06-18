@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BeeShooterGame"
         mc:Ignorable="d"
-        Title="Bee Shooter Game" Height="600" Width="400" KeyDown="Window_KeyDown">
+        Title="Bee Shooter Game" Height="600" Width="800" KeyDown="Window_KeyDown">
     <Grid>
         <!-- Main Menu -->
-        <Grid x:Name="MainMenuPanel" Background="Black" Visibility="Visible" Opacity="0.9" Panel.ZIndex="10">
+        <Grid x:Name="MainMenuPanel" Background="Black" Visibility="Collapsed" Opacity="0.9" Panel.ZIndex="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -54,11 +54,12 @@
                 Click="ExitGame_Click"/>
 
         </Grid>
-        <Canvas x:Name="GameCanvas" Background="Black" Visibility="Collapsed"/>
+        <Canvas x:Name="GameCanvas" Background="Black" Visibility="Visible"/>
         <Grid VerticalAlignment="Top" Height="60" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.2*" />
                 <ColumnDefinition Width="1.6*" />
+                <ColumnDefinition Width="1.2*" />
                 <ColumnDefinition Width="1.2*" />
             </Grid.ColumnDefinitions>
 
@@ -90,6 +91,31 @@
                HorizontalAlignment="Right"
                VerticalAlignment="Center"
                Grid.Column="2" />
+            <Grid Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <!-- Highest Score -->
+                <TextBlock x:Name="HighScoreText"
+                   Text="High Score: 0"
+                   FontSize="16"
+                   Foreground="White"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Grid.Row="0" 
+                   Margin="10,0,0,0"/>
+
+                <!-- Longest Survival -->
+                <TextBlock x:Name="LongestTimeText"
+                   Text="Longest Time: 00:00"
+                   FontSize="16"
+                   Foreground="White"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"                       
+                   Grid.Row="1" 
+                   Margin="10,0,0,0"/>
+            </Grid>
         </Grid>
         <!-- Game over -->
         <TextBlock x:Name="GameOverText" 
