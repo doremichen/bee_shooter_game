@@ -1,0 +1,118 @@
+﻿<Window x:Class="BeeShooterGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BeeShooterGame"
+        mc:Ignorable="d"
+        Title="Bee Shooter Game" Height="600" Width="400" KeyDown="Window_KeyDown">
+    <Grid>
+        <!-- Main Menu -->
+        <Grid x:Name="MainMenuPanel" Background="Black" Visibility="Visible" Opacity="0.9" Panel.ZIndex="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Bee Shooter Game"
+               FontSize="36"
+               FontWeight="Bold"
+               Foreground="Yellow"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Bottom"
+               Grid.Row="0"
+               Margin="0,0,0,20"/>
+
+            <Button Content="Start Game"
+                FontSize="24"
+                Width="200"
+                Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Grid.Row="1"
+                Click="StartGame_Click"/>
+
+            <Button Content="Instructions"
+                FontSize="24"
+                Width="200"
+                Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Grid.Row="2"
+                Margin="0,10,0,0" Click="Instruction_Click"/>
+
+            <Button Content="Exit"
+                FontSize="24"
+                Width="200"
+                Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Grid.Row="3"
+                Margin="0,10,0,20" 
+                Click="ExitGame_Click"/>
+
+        </Grid>
+        <Canvas x:Name="GameCanvas" Background="Black" Visibility="Collapsed"/>
+        <Grid VerticalAlignment="Top" Height="60" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*" />
+                <ColumnDefinition Width="1.6*" />
+                <ColumnDefinition Width="1.2*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Score -->
+            <TextBlock x:Name="ScoreText"
+               Text="Score: 0"
+               FontSize="24"
+               Foreground="White"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Grid.Column="0" />
+
+            <!-- Time -->
+            <TextBlock x:Name="TimeText"
+               Text="Time: 00:00"
+               Padding="5,0,5,0"
+               MinWidth="120"        
+               FontSize="24"
+               Foreground="White"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"        
+               Grid.Column="1" />
+
+            <!-- Lives -->
+            <TextBlock x:Name="LivesText"
+               Text="Lives: 3"
+               FontSize="24"
+               Foreground="White"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"
+               Grid.Column="2" />
+        </Grid>
+        <!-- Game over -->
+        <TextBlock x:Name="GameOverText" 
+                   Text="Game Over!" 
+                   FontSize="48" 
+                   FontWeight="Bold" 
+                   Foreground="Red" 
+                   Background="#AA000000" 
+                   Padding="20" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" 
+                   Visibility="Collapsed"/>
+        <!-- Restart Button -->
+        <Button x:Name="RestartButton" 
+                Content="Restart" 
+                FontSize="24" 
+                Padding="10" 
+                Width="200" 
+                Height="60" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Bottom" 
+                Margin="0,100,0,0" 
+                Visibility="Collapsed" 
+                Click="RestartButton_Click"/>
+    </Grid>
+</Window>
