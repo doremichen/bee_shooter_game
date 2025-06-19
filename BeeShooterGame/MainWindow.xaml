@@ -13,6 +13,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -27,7 +28,7 @@
 
             <Button Content="Start Game"
                 FontSize="24"
-                Width="200"
+                Width="400"
                 Height="60"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
@@ -36,20 +37,31 @@
 
             <Button Content="Instructions"
                 FontSize="24"
-                Width="200"
+                Width="400"
                 Height="60"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Grid.Row="2"
                 Margin="0,10,0,0" Click="Instruction_Click"/>
 
-            <Button Content="Exit"
+            <!-- View Leaderboard Button -->
+            <Button Content="View Leaderboard"
                 FontSize="24"
-                Width="200"
+                Width="400"
                 Height="60"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Grid.Row="3"
+                Margin="0,10,0,0"
+                Click="ShowLeaderboard_Click"/>
+
+            <Button Content="Exit"
+                FontSize="24"
+                Width="400"
+                Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Grid.Row="4"
                 Margin="0,10,0,20" 
                 Click="ExitGame_Click"/>
 
@@ -117,9 +129,10 @@
                    Grid.Row="1" 
                    Margin="10,0,0,0"/>
             </Grid>
+            
             <!-- Exit Button -->
             <Button x:Name="ExitButton"
-                Content="Exit"
+                Content="Back"
                 FontSize="16"
                 Padding="5,2"
                 Width="60"
@@ -127,7 +140,7 @@
                 Grid.Column="4"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
-                Click="ExitButton_Click"/>
+                Click="BackButton_Click"/>
         </Grid>
         <!-- Game over -->
         <TextBlock x:Name="GameOverText" 

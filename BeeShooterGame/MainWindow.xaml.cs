@@ -1,5 +1,8 @@
 ﻿using BeeShooterGame.data;
+using BeeShooterGame.Helpers;
 using BeeShooterGame.Toast;
+using BeeShooterGame.Views;
+using Microsoft.VisualBasic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -255,7 +258,22 @@ namespace BeeShooterGame
             GameOverText.Visibility = Visibility.Visible;
             RestartButton.Visibility = Visibility.Visible; // Show restart button
             _gameLoopTimer.Stop(); // Stop the game loop timer
-            MessageBox.Show("Game Over!"); // Show game over message
+            MessageBox.Show("Game Over!");
+
+            // Write name and score to scoreboard (optional)
+            var playerName = PromptForPlayerName(); // Prompt user for player name
+            ScoreBoardManager.AddScore(playerName, _score); // Add a score entry with player name and score
+            
+        }
+
+        private string PromptForPlayerName()
+        {
+            string input = Interaction.InputBox("Enter your name:", "Game Over", "Player");
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return "Player";
+            }
+            return input.Trim();
         }
 
         /**
@@ -336,6 +354,17 @@ namespace BeeShooterGame
 
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetUI();
+            // Reinitialize the game
+            InitGame();
+            // Hide game over text and restart button
+            GameOverText.Visibility = Visibility.Hidden;
+            RestartButton.Visibility = Visibility.Hidden;
+
+        }
+
+        private void ResetUI()
+        {
             // Reset game state
             _gameOver = false;
             _playerLives = 3; // Reset player lives
@@ -348,12 +377,6 @@ namespace BeeShooterGame
             _bullets.Clear();
             _enemies.Clear();
             GameCanvas.Children.Clear(); // Clear the canvas
-            // Reinitialize the game
-            InitGame();
-            // Hide game over text and restart button
-            GameOverText.Visibility = Visibility.Hidden;
-            RestartButton.Visibility = Visibility.Hidden;
-
         }
 
         private void InitUI()
@@ -423,9 +446,9 @@ namespace BeeShooterGame
         }
 
         /**
-         * Exit button click event handler
+         * Back button click event handler
          */
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             // Show confirmation dialog before exiting
             MessageBoxResult result = MessageBox.Show("Are you sure you want to exit the game?", "Exit Game", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -441,8 +464,22 @@ namespace BeeShooterGame
                     _gameLoopTimer.Stop(); // Stop the game loop timer
                 }
 
-                Application.Current.Shutdown(); // Close the application
+                // Back to main menu
+                GameCanvas.Visibility = Visibility.Collapsed; // Hide the game canvas
+                MainMenuPanel.Visibility = Visibility.Visible; // Show the main menu panel
+                // Clear the canvas and reset game state
+                ResetUI();
+                GameOverText.Visibility = Visibility.Hidden; // Hide game over text
+                RestartButton.Visibility = Visibility.Hidden; // Hide restart button
             }
+        }
+
+        private void ShowLeaderboard_Click(object sender, RoutedEventArgs e)
+        {
+            // open leaderbord window
+            var leaderboardWindow = new LeaderboardWindow(); // Assuming you have a LeaderboardWindow class
+            leaderboardWindow.ShowDialog(); // Show the leaderboard window
+
         }
     }
 }
