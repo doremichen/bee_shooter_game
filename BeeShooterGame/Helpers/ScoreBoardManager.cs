@@ -78,7 +78,7 @@ namespace BeeShooterGame.Helpers
             scoreBoard.Scores = scoreBoard.GetTopScores(MaxScores);
             SaveScoreBoard(scoreBoard);
             // Show a toast message
-            ToastManager.Show($"Score added: {playerName} - {score}", ToastType.Success);
+            ToastManager.Show($"Score added: {playerName} - {score}", ToastType.Success, ToastPosition.Center);
         }
     }
 }

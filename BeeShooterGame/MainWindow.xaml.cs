@@ -268,12 +268,14 @@ namespace BeeShooterGame
 
         private string PromptForPlayerName()
         {
-            string input = Interaction.InputBox("Enter your name:", "Game Over", "Player");
-            if (string.IsNullOrWhiteSpace(input))
+            // show PlayerNameDialog to get player name
+            var nameDialog = new PlayerNameDialog();
+            if (nameDialog.ShowDialog() == true)
             {
-                return "Player";
+                return nameDialog.PlayerName; // Return the player name entered in the dialog
             }
-            return input.Trim();
+
+            return "Player"; // Default player name if dialog is cancelled or closed without input
         }
 
         /**
