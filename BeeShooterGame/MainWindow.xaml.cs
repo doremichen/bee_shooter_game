@@ -1,4 +1,5 @@
 ﻿using BeeShooterGame.data;
+using BeeShooterGame.Toast;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,6 +44,11 @@ namespace BeeShooterGame
         // longest time survived variable
         private TimeSpan _longestTimeSurvived = TimeSpan.Zero; // track longest time survived
 
+        // enemy speed level
+        private int _enemySpeedLevel = 1; // Initial enemy speed level
+        // enemy speed increment value
+        private double _enemySpeedIncrement = 0.5; // Speed increment value for each level
+
         // save file path for high score and longest time survived
         private const string SaveFilePath = "game_record.json"; // Path to save game record
 
@@ -53,8 +59,7 @@ namespace BeeShooterGame
             InitializeComponent();
             // Load game record from file
             LoadGameRecord(); // Load high score and longest time survived from file
-            // Initialize the game
-            InitGame();  // Debugging: Initialize the game when the window is loaded
+            
         }
 
         private void InitGame()
@@ -99,7 +104,53 @@ namespace BeeShooterGame
                 _elapsedTime += _gameLoopTimer.Interval; // Increment elapsed time by the timer interval
 
                 // Update show elapsed time in a TextBlock if needed
-                TimeText.Text = $"Time: {_elapsedTime.Minutes:00}:{_elapsedTime.Seconds:00}"; 
+                TimeText.Text = $"Time: {_elapsedTime.Minutes:00}:{_elapsedTime.Seconds:00}";
+
+                // check the enemy speed level and adjust enemy speed accordingly
+                int mintesPassed = (int)_elapsedTime.TotalMinutes; // Get total minutes passed
+                if (mintesPassed > _enemySpeedLevel) // Example: increase speed after 60 seconds
+                {
+                    // Toast message to the user about enemy speed increase
+                    ToastManager.Show($"Enemy speed increased to level {mintesPassed}!", ToastType.Info,ToastPosition.Center);
+                    _enemySpeedLevel = mintesPassed; // Increase enemy speed level
+                    foreach (var enemy in _enemies)
+                    {
+                        enemy.Speed += _enemySpeedIncrement; // Increase enemy speed
+                    }
+                }
+
+                // check if the player is out of bounds
+                if (_player.X < 0)
+                {
+                    _player.X = 0; // Prevent player from going out of bounds on the left
+                }
+                else if (_player.X > GameCanvas.ActualWidth - _player.Sprite.Width)
+                {
+                    _player.X = GameCanvas.ActualWidth - _player.Sprite.Width; // Prevent player from going out of bounds on the right
+                }
+                if (_player.Y < 0)
+                {
+                    _player.Y = 0; // Prevent player from going out of bounds on the top
+                }
+                else if (_player.Y > GameCanvas.ActualHeight - _player.Sprite.Height)
+                {
+                    _player.Y = GameCanvas.ActualHeight - _player.Sprite.Height; // Prevent player from going out of bounds on the bottom
+                }
+
+
+                // Spawn new enemies every 100 ticks (approximately every 1.6 seconds)
+                _enemySpawnCounter++;
+                if (_enemySpawnCounter >= 100)
+                {
+                    // Reset the spawn counter
+                    _enemySpawnCounter = 0;
+                    // Spawn a new enemy at a random X position
+                    double enemyX = _random.Next(0, (int)(GameCanvas.ActualWidth - 40)); // Assuming enemy width is 40
+                    Models.Enemy newEnemy = new Models.Enemy(enemyX, 0); // Start at the top of the canvas
+                    _enemies.Add(newEnemy); // Add to the list of enemies
+                    GameCanvas.Children.Add(newEnemy.Sprite); // Add enemy sprite to the canvas
+                    newEnemy.UpdatePosition(); // Update enemy position on canvas
+                }
 
                 // Update game state here
                 // For example, you can move the player or check for collisions
@@ -117,59 +168,7 @@ namespace BeeShooterGame
                         GameCanvas.Children.Remove(bullet.Sprite); // Remove bullet sprite from canvas
                         _bullets.RemoveAt(i); // Remove bullet from the list
                     }
-                }
 
-                // Update enemies
-                for (int i = _enemies.Count - 1; i >= 0; i--)
-                {
-                    Models.Enemy enemy = _enemies[i];
-                    enemy.MoveDown(); // Move the enemy down
-                    enemy.UpdatePosition(); // Update enemy position on canvas
-                    // Check if the enemy is out of bounds
-                    if (enemy.Y > GameCanvas.ActualHeight)
-                    {
-                        GameCanvas.Children.Remove(enemy.Sprite); // Remove enemy sprite from canvas
-                        _enemies.RemoveAt(i); // Remove enemy from the list
-                        continue;
-                    }
-
-                    // Check for collision with player
-                    if (_player.IntersectsWith(enemy))
-                    {
-                        // Handle player collision with enemy
-                        _playerLives--; // Decrease player lives
-                        // update player lives display if you have one
-                        LivesText.Text = $"Lives: {_playerLives}";
-
-                        GameCanvas.Children.Remove(enemy.Sprite); // Remove enemy sprite from canvas
-                        _enemies.RemoveAt(i); // Remove enemy from the list
-                        // Check if player has no lives left
-                        if (_playerLives <= 0)
-                        {
-                            GamOver();
-                            return; // Exit the game loop
-                        }
-                    }
-                }
-
-                // Spawn new enemies every 100 ticks (approximately every 1.6 seconds)
-                _enemySpawnCounter++;
-                if (_enemySpawnCounter >= 100)
-                {
-                    // Reset the spawn counter
-                    _enemySpawnCounter = 0;
-                    // Spawn a new enemy at a random X position
-                    double enemyX = _random.Next(0, (int)(GameCanvas.ActualWidth - 40)); // Assuming enemy width is 40
-                    Models.Enemy newEnemy = new Models.Enemy(enemyX, 0); // Start at the top of the canvas
-                    _enemies.Add(newEnemy); // Add to the list of enemies
-                    GameCanvas.Children.Add(newEnemy.Sprite); // Add enemy sprite to the canvas
-                    newEnemy.UpdatePosition(); // Update enemy position on canvas
-                }
-
-                // Check for collisions between bullets and enemies
-                for (int i = _bullets.Count - 1; i >= 0; i--)
-                {
-                    Models.Bullet bullet = _bullets[i];
                     for (int j = _enemies.Count - 1; j >= 0; j--)
                     {
                         Models.Enemy enemy = _enemies[j];
@@ -192,7 +191,53 @@ namespace BeeShooterGame
                     }
                 }
 
+                // Update enemies
+                for (int i = _enemies.Count - 1; i >= 0; i--)
+                {
+                    Models.Enemy enemy = _enemies[i];
+                    enemy.MoveDown(); // Move the enemy down
+                    enemy.UpdatePosition(); // Update enemy position on canvas
+                    // Check if the enemy is out of bounds
+                    if (enemy.Y > GameCanvas.ActualHeight)
+                    {
+                        GameCanvas.Children.Remove(enemy.Sprite); // Remove enemy sprite from canvas
+                        _enemies.RemoveAt(i); // Remove enemy from the list
 
+                        // Decrease player lives if an enemy goes out of bounds
+                        _playerLives--; // Decrease player lives
+                        // update player lives display if you have one
+                        LivesText.Text = $"Lives: {_playerLives}";
+
+                        // Check if player has no lives left
+                        if (_playerLives <= 0)
+                        {
+                            GamOver();
+                            return; // Exit the game loop
+                        }
+                        else
+                        {
+                            continue;
+                        }     
+                    }
+
+                    // Check for collision with player
+                    if (_player.IntersectsWith(enemy))
+                    {
+                        // Handle player collision with enemy
+                        _playerLives--; // Decrease player lives
+                        // update player lives display if you have one
+                        LivesText.Text = $"Lives: {_playerLives}";
+
+                        GameCanvas.Children.Remove(enemy.Sprite); // Remove enemy sprite from canvas
+                        _enemies.RemoveAt(i); // Remove enemy from the list
+                        // Check if player has no lives left
+                        if (_playerLives <= 0)
+                        {
+                            GamOver();
+                            return; // Exit the game loop
+                        }
+                    }
+                }
 
             };
         }
@@ -251,15 +296,21 @@ namespace BeeShooterGame
             // Handle player movement based on key presses
             switch (e.Key)
             {
-                case Key.Left:
-                    _player.MoveLeft();
-                    break;
-                case Key.Right:
-                    _player.MoveRight();
-                    break;
-                case Key.Space:
-                    Shoot();
-                    break;
+                    case Key.Left:
+                        _player.MoveLeft();
+                        break;
+                    case Key.Right:
+                        _player.MoveRight();
+                        break;
+                    case Key.Up:
+                        _player.MoveUp();
+                        break;
+                    case Key.Down:
+                        _player.MoveDown();
+                        break;
+                    case Key.Space:
+                        Shoot();
+                        break;
                     // Add more cases for other keys if needed
             }
             // Update player position after movement
@@ -290,7 +341,8 @@ namespace BeeShooterGame
             _playerLives = 3; // Reset player lives
             _score = 0; // Reset score
             _elapsedTime = TimeSpan.Zero; // Reset elapsed time
-                                          // Update UI elements
+
+            // Update UI elements
             InitUI();
             // Clear existing bullets and enemies
             _bullets.Clear();
@@ -309,7 +361,7 @@ namespace BeeShooterGame
             LivesText.Text = $"Lives: {_playerLives}"; // Update lives display
             ScoreText.Text = $"Score: {_score}"; // Update score display
             TimeText.Text = $"Time: 00:00"; // Reset elapsed time display
-            LongestTimeText.Text = $"Longest Time: {_longestTimeSurvived}"; // Reset longest time survived display
+            LongestTimeText.Text = $"Longest Time: {_longestTimeSurvived.Minutes:00}:{_longestTimeSurvived.Seconds:00}"; // Reset longest time survived display
             HighScoreText.Text = $"High Score: {_highScore}"; // Reset high score display
         }
 

@@ -34,5 +34,20 @@ namespace BeeShooterGame.Models
             UpdatePosition();
         }
 
+        // Method to move the player up
+        public void MoveUp()
+        {
+            Y -= Speed;
+            UpdatePosition();
+        }
+
+        // Method to move the player down
+        public void MoveDown()
+        {
+            Y += Speed;
+            UpdatePosition();
+        }
+
+
     }
 }

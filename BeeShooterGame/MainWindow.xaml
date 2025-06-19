@@ -8,7 +8,7 @@
         Title="Bee Shooter Game" Height="600" Width="800" KeyDown="Window_KeyDown">
     <Grid>
         <!-- Main Menu -->
-        <Grid x:Name="MainMenuPanel" Background="Black" Visibility="Collapsed" Opacity="0.9" Panel.ZIndex="10">
+        <Grid x:Name="MainMenuPanel" Background="Black" Visibility="Visible" Opacity="0.9" Panel.ZIndex="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -54,7 +54,7 @@
                 Click="ExitGame_Click"/>
 
         </Grid>
-        <Canvas x:Name="GameCanvas" Background="Black" Visibility="Visible"/>
+        <Canvas x:Name="GameCanvas" Background="Black" Visibility="Collapsed"/>
         <Grid VerticalAlignment="Top" Height="60" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.2*" />
@@ -148,7 +148,7 @@
                 Width="200" 
                 Height="60" 
                 HorizontalAlignment="Center" 
-                VerticalAlignment="Bottom" 
+                VerticalAlignment="Center" 
                 Margin="0,100,0,0" 
                 Visibility="Collapsed" 
                 Click="RestartButton_Click"/>
