@@ -2,17 +2,8 @@
 using BeeShooterGame.Helpers;
 using BeeShooterGame.Toast;
 using BeeShooterGame.Views;
-using Microsoft.VisualBasic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace BeeShooterGame
@@ -62,7 +53,7 @@ namespace BeeShooterGame
             InitializeComponent();
             // Load game record from file
             LoadGameRecord(); // Load high score and longest time survived from file
-            
+
         }
 
         private void InitGame()
@@ -114,7 +105,7 @@ namespace BeeShooterGame
                 if (mintesPassed > _enemySpeedLevel) // Example: increase speed after 60 seconds
                 {
                     // Toast message to the user about enemy speed increase
-                    ToastManager.Show($"Enemy speed increased to level {mintesPassed}!", ToastType.Info,ToastPosition.Center);
+                    ToastManager.Show($"Enemy speed increased to level {mintesPassed}!", ToastType.Info, ToastPosition.Center);
                     _enemySpeedLevel = mintesPassed; // Increase enemy speed level
                     foreach (var enemy in _enemies)
                     {
@@ -220,7 +211,7 @@ namespace BeeShooterGame
                         else
                         {
                             continue;
-                        }     
+                        }
                     }
 
                     // Check for collision with player
@@ -263,7 +254,7 @@ namespace BeeShooterGame
             // Write name and score to scoreboard (optional)
             var playerName = PromptForPlayerName(); // Prompt user for player name
             ScoreBoardManager.AddScore(playerName, _score); // Add a score entry with player name and score
-            
+
         }
 
         private string PromptForPlayerName()
@@ -316,21 +307,21 @@ namespace BeeShooterGame
             // Handle player movement based on key presses
             switch (e.Key)
             {
-                    case Key.Left:
-                        _player.MoveLeft();
-                        break;
-                    case Key.Right:
-                        _player.MoveRight();
-                        break;
-                    case Key.Up:
-                        _player.MoveUp();
-                        break;
-                    case Key.Down:
-                        _player.MoveDown();
-                        break;
-                    case Key.Space:
-                        Shoot();
-                        break;
+                case Key.Left:
+                    _player.MoveLeft();
+                    break;
+                case Key.Right:
+                    _player.MoveRight();
+                    break;
+                case Key.Up:
+                    _player.MoveUp();
+                    break;
+                case Key.Down:
+                    _player.MoveDown();
+                    break;
+                case Key.Space:
+                    Shoot();
+                    break;
                     // Add more cases for other keys if needed
             }
             // Update player position after movement
@@ -394,7 +385,7 @@ namespace BeeShooterGame
          * Save game record to a json file
          */
         private void SaveGameRecord()
-        {             
+        {
             var gameRecord = new
             {
                 HighScore = _highScore,

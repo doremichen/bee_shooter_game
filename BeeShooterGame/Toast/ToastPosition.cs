@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace BeeShooterGame.Toast
 {
@@ -19,36 +14,36 @@ namespace BeeShooterGame.Toast
         // abtract getposition method
         public abstract Point GetPosition(double toastWidth, double toastHeight);
 
-        private class TopLeftPosition : ToastPosition 
-        { 
-        
+        private class TopLeftPosition : ToastPosition
+        {
+
             public override Point GetPosition(double toastWidth, double toastHeight)
             {
                 var wa = SystemParameters.WorkArea;
                 return new Point(wa.Left + 10, wa.Top + 10);
             }
         }
-        private class TopRightPosition : ToastPosition 
-        { 
-        
+        private class TopRightPosition : ToastPosition
+        {
+
             public override Point GetPosition(double toastWidth, double toastHeight)
             {
                 var wa = SystemParameters.WorkArea;
                 return new Point(wa.Right - toastWidth - 10, wa.Top + 10);
             }
         }
-        private class BottomLeftPosition : ToastPosition 
-        { 
-            
+        private class BottomLeftPosition : ToastPosition
+        {
+
             public override Point GetPosition(double toastWidth, double toastHeight)
             {
                 var wa = SystemParameters.WorkArea;
                 return new Point(wa.Left + 10, wa.Bottom - toastHeight - 10);
             }
         }
-        private class BottomRightPosition : ToastPosition 
-        { 
-        
+        private class BottomRightPosition : ToastPosition
+        {
+
             public override Point GetPosition(double toastWidth, double toastHeight)
             {
                 var wa = SystemParameters.WorkArea;
@@ -56,9 +51,9 @@ namespace BeeShooterGame.Toast
             }
 
         }
-        private class CenterPosition : ToastPosition 
-        { 
-        
+        private class CenterPosition : ToastPosition
+        {
+
             public override Point GetPosition(double toastWidth, double toastHeight)
             {
                 var wa = SystemParameters.WorkArea;
